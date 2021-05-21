@@ -5,7 +5,9 @@ import com.abdur.testing.entity.UserInfo;
 import com.abdur.testing.entity.dto.UserInfoDTO;
 import com.abdur.testing.entity.dto.UserInfoView;
 import com.abdur.testing.entity.dto.UserRoleView;
+import com.abdur.testing.repository.Filter;
 import com.abdur.testing.repository.UserInfoRepository;
+import com.abdur.testing.repository.UserInfoSpecificationRepo;
 import com.abdur.testing.service.UserInfoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +23,11 @@ import java.util.Optional;
 public class UserInfoServiceImpl implements UserInfoService {
 
     private final UserInfoRepository userInfoRepository;
+    private final UserInfoSpecificationRepo userInfoSpecificationRepo;
 
-    public UserInfoServiceImpl(UserInfoRepository userInfoRepository) {
+    public UserInfoServiceImpl(UserInfoRepository userInfoRepository, UserInfoSpecificationRepo userInfoSpecificationRepo) {
         this.userInfoRepository = userInfoRepository;
+        this.userInfoSpecificationRepo = userInfoSpecificationRepo;
     }
 
     @Override
@@ -136,6 +140,21 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public Page<UserInfoView> findUserInfoByPagination(Pageable pageable) {
         return userInfoRepository.findAllProjectedBy(pageable);
+    }
+
+    @Override
+    public List<UserInfo> getAllUserNameLike(String name) {
+        return userInfoSpecificationRepo.findAllUserNameLike(name);
+    }
+
+    @Override
+    public List<UserInfo> findUserNameAndPhoneLike(String name, Long phone) {
+        return userInfoSpecificationRepo.findUserNameAndPhoneLike(name, phone);
+    }
+
+    @Override
+    public List<UserInfo> findUserByDynamicFiltering(List<Filter> filters) {
+        return userInfoSpecificationRepo.findUserByDynamicFilter(filters);
     }
 
 
